@@ -1,0 +1,164 @@
+# -------------------------
+# SHARED PHYSICAL PARAMETERS
+# -------------------------
+shared:
+  # Cosmology / timing
+  z:            { value: 1.44, fixed: true }                        # redshift fixed
+  t0_obs:       { value: 178.548, bounds: [160.0, 180.0], fixed: true, transform: lin }  # reference time shift (applied per-component via fit.apply_t0_to_*)
+  t0_fs_obs:    { value: 0.0, bounds: [0.0, 75.0], fixed: true, transform: lin }  # optional FS-specific reference time (t_obs -> t_obs - t0_fs_obs)
+
+
+  # Prompt energy knob (global normalization) and radiative efficiency
+  Egamma_iso_core: { value: 1.21e52, bounds: [3.00e51, 3.0e53], fixed: false, transform: log }
+  eta_gamma:       { value: 0.13, bounds:[0.003, 0.8],  fixed: false }                    # used by fitter to derive FS kinetic energy
+
+  # Jet structure (common to HLE and FS)
+  Gamma_c:      { value: 170, bounds: [120.0, 220.0], fixed: false, transform: log } # core Lorentz factor
+  theta_j_deg:  { value: 2.162,  bounds: [0.9, 8.0],    fixed: false, transform: lin } # core half-opening
+  g:            { value: 2.97,  bounds: [1.8, 5.0],    fixed: false, transform: lin } # Γ(θ) fall-off index
+  epsilon_c:    { value: 1.0,    fixed: true }                                       # emissivity normalization at core (kept fixed to 1)
+  k_struct:     { value: 0.91, bounds: [0.9, 3.0],   fixed: false, transform: lin } # emissivity fall-off index
+  theta_v_deg:  { value: 0.4,  bounds: [0.0, 8.0],    fixed: false, transform: lin } # viewing angle w.r.t. jet axis
+  theta_edge_deg: null  # optional hard edge; null => not enforced by the code
+
+  # Source coordinates (necessary for ebv_mode: map)
+  ra_deg: 147.2315
+  dec_deg: -13.1859
+# -----------------------------------
+# HLE-SPECIFIC PHYSICAL PARAMETERS
+# (2SBPL in the comoving frame)
+# -----------------------------------
+hle:
+  # Emitting shell geometry
+  R:            { value: 2.0e16, bounds: [1.0e14, 4.0e16], fixed: false, transform: log }  # shell radius; also used by HLE→FS onset floor
+
+  # Comoving normalization
+  i_p_prime:    { value: 1.0,  bounds: [1.0, 1.0e5],       fixed: true,  transform: log }  # set fixed: fitter calibrates it from Egamma_iso_core
+
+  # Comoving 2-break spectrum (2SBPL)
+  nu_b1_0:      { value: 3.0e15,  bounds: [1.0e15, 9.0e15], fixed: true, transform: log }  # lower break (comoving)
+  nu_b2_0:      { value: 9.0e17,  bounds: [3.0e17, 3.0e19], fixed: true, transform: log }  # higher break (comoving)
+  q1:           { value: 0.0,   bounds: [0.0, 0.5],    fixed: true, transform: lin }
+  q2:           { value: 0.0,   bounds: [0.0, 0.6],    fixed: true, transform: lin }
+
+  # Spectral slopes (convention: F_nu ∝ ν^(-alpha); the code derives beta = -alpha)
+  alpha_lo:     { value: -0.3333, fixed: true }   # ~1/3
+  alpha_mid:    { value: 0.8,          fixed: true }
+  alpha_hi:     { value: 2.0,          fixed: true }
+  s1:           { value: 1.5,          fixed: true }   # smoothness around nu_b1
+  s2:           { value: 1.5,          fixed: true }   # smoothness around nu_b2
+
+  # Framing / normalization mode for HLE spectrum
+  breaks_frame: { value: "comoving",    fixed: true }     # comoving-only evolution
+  norm_mode:    { value: "obs_pivot_eats", fixed: true } 
+  E_piv_keV:    { value: 1.0,           fixed: true }     # pivot energy for normalization (keV)
+
+  # HLE grids
+  n_theta: { value: 254, fixed: true }
+  n_phi:   { value: 254, fixed: true }
+  n_bins:  { value: 150, fixed: true }
+  n_nu:    { value: 18,  fixed: true }
+  n_mc:    { value: 0,   fixed: true }
+  min_grid_counts: { value: 30, fixed: true }
+  ring_mode: { value: "off", fixed: true }
+  use_kdotn: { value: true, fixed: true }
+
+# -----------------------------------
+# FS-SPECIFIC PHYSICAL PARAMETERS
+# (forward shock afterglow)
+# -----------------------------------
+fs:
+  # External medium; 'ism' or 'wind' (if both 'medium' and 'k_med' exist, the code uses them consistently)
+  medium: { value: "ism", fixed: true }
+  k_med:  null
+
+  # Ambient density (ISM), or A* for wind (Astar kept fixed if medium=ism)
+  n0:     { value: 1.85,   bounds: [1.0e-3, 1e2], fixed: false, transform: log }
+  Astar:  { value: 0.1,   bounds: [1.0e-3, 1.0e2], fixed: true,  transform: log }
+  
+  # Microphysics
+  p:      { value: 2.21,  bounds: [2.0, 2.6],    fixed: false, transform: lin }
+  eps_e:  { value: 1.0e-4,  bounds: [1.0e-4, 0.5], fixed: false, transform: log }
+  eps_B:  { value: 4.5e-5 ,bounds: [1e-5, 1e-2], fixed: false, transform: log }
+  Y_SSC:  { value: 0.0,   bounds: [0.0, 3.0],    fixed: true,  transform: lin }  # keep off initially to avoid degeneracies
+
+  # FS onset control (still subject to the HLE→FS floor via 'consistency' below)
+  fs_on_mode:   { value: "fraction_tdec", fixed: true }
+  fs_on_value:  { value: 1.0,  fixed: true }      # fraction of t_dec for the turn-on
+  fs_on_width:  { value: 0.2, fixed: true }       # smoothness (in decades of time)
+  fs_on_radius: { value: null }                   # optional: force onset radius
+  fs_on_tobs:   { value: null }                   # optional: force onset observer time
+
+  # Radial/time sampling for FS dynamics
+  n_bins: { value: 150, fixed: true }
+  n_R:    { value: 120, fixed: true }
+  R_min:  { value: 2.0e16, fixed: true }
+  R_max:  { value: 1.0e18, fixed: true }
+
+  # Angular/frequency grids for FS emission
+  n_theta: { value: 254, fixed: true }
+  n_phi:   { value: 254, fixed: true }
+  n_nu:    { value: 18,  fixed: true }
+
+  # Numerical guards
+  EPS_DEN:  { value: 1.0e-12, fixed: true }
+  D_MAX:    { value: 1.0e6,   fixed: true }
+  use_kdotn: { value: false,   fixed: true }
+
+# ---------------------------------------------------------
+# HLE→FS CONSISTENCY LINK (enforce a physical onset floor)
+# ---------------------------------------------------------
+consistency:
+  link_hle_R_to_fs: true
+  mode: "tobs_floor"         # 'tobs_floor' (time floor) or 'radius_floor'
+  gamma_for_link: "Gamma_c"  # use shared.Gamma_c for the floor
+  xi_radius: 1.0             # if radius_floor: R_fs >= xi_radius * R_HLE
+  eta_time: 1.0              # if tobs_floor:  t_on >= (1+z) R / (2 c Γ^2) * eta_time
+  # (Optional) Explicit flag if you want the text to reflect intent; fitter already calibrates when Egamma_iso_core is present.
+  calibrate_ip_from_Egamma: true
+  # If you ever want to calibrate on a different band, set this and adapt the fitter; by default we use fit.xrt_band_keV.
+  # prompt_calib_band_keV: [0.3, 10.0]
+
+# ------------------------------------------
+# FIT / WEIGHTS / RESOLUTION & FAST OVERRIDES
+# ------------------------------------------
+fit:
+  # XRT band (observed) for the light-curve fit
+  xrt_band_keV: [0.3, 10.0]
+
+  # Robust loss for least_squares; note: 'soft_l1' cost is not a true chi^2
+  robust_loss: "linear"
+  f_scale: 1.0
+  max_nfev: 150
+
+  # Residual block weights
+  weight_blocks: { xrt: 1.0, uvot_white: 1.0, targets: 0.0 }
+
+  # Whether to apply the component reference times (t0_obs for HLE, t0_fs_obs for FS) to the time axes
+  apply_t0_to_hle: true
+  apply_t0_to_fs:  true
+
+  # Fast-pass overrides (used inside residuals only; final plots recompute dense)
+  fast: false
+  fast_n_theta: 48
+  fast_n_phi:   48
+  fast_n_bins:  40
+  fast_n_nu:     8
+  fast_min_grid: 10
+  fast_n_R_fs:   60
+uvot:
+  # Absolute path for UVOT effective area file
+  caldb_effarea_dir: "swift_caldb/data/swift/uvota/bcf/effarea"
+
+dust:
+  use_galactic_extinction: true
+  ebv_mode: "map"
+  rv: 3.1
+  cache_dir: "/path/to/dustmaps_cache"
+
+  host:
+    use_host_extinction: true   # default OFF
+    ebv_host: 0.1
+    rv_host: 3.1
+    law: "mw"                    # CCM89+O’Donnell 94
+
