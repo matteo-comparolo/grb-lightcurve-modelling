@@ -1,0 +1,276 @@
+params:
+  # ---------- Jet structure ----------
+  - name: Gamma_c
+    value: 55.0
+    min: 40.0           
+    max: 200.0
+    fixed: false
+    transform: log
+    map_to: Gamma_c
+
+  - name: theta_j_deg
+    value: 2.3
+    min: 2.2
+    max: 2.5
+    fixed: false
+    transform: lin
+    map_to: theta_j_deg
+
+  - name: g
+    value: 2.0
+    min: 1.5
+    max: 3.0
+    fixed: true
+    transform: lin
+    map_to: g
+
+  - name: epsilon_c
+    value: 1.0
+    min: 0.9
+    max: 1.1
+    fixed: true
+    transform: log
+    map_to: epsilon_c
+
+  - name: k
+    value: 0.9
+    min: 0.9
+    max: 3.0
+    fixed: true
+    transform: lin
+    map_to: k
+
+  - name: tophat
+    value: 1.0
+    min: 0.9
+    max: 1.0
+    fixed: true
+    transform: lin
+    map_to: tophat
+
+  # ---------- Geometry and viewing ----------
+  - name: theta_v_deg
+    value: 0.1
+    min: 0.01
+    max: 1.0
+    fixed: false
+    transform: lin
+    map_to: theta_v_deg
+
+  - name: R
+    value: 8.7e15
+    min: 8.4e15
+    max: 1.0e16
+    fixed: false
+    transform: log
+    map_to: R
+    
+  # ---------- Time origin for the fit ----------
+  - name: t0_obs
+    value: 0.9
+    min: 0.0
+    max: 1.5
+    fixed: true
+    transform: lin
+
+  # ---------- Spectrum selector ----------
+  - name: spectrum           # 0=PL, 1=SBPL, 2=2SBPL
+    value: 1
+    min: 0
+    max: 2
+    fixed: true
+    transform: lin
+    map_to: spectrum
+
+  # ---------- PL (used if spectrum=0) ----------
+  - name: beta_pl
+    value: 1.5
+    min: 0.5
+    max: 3.0
+    fixed: true
+    transform: lin
+    map_to: beta_pl
+
+  - name: nu0_prime
+    value: 1.0
+    min: 0.9
+    max: 1.1
+    fixed: true
+    transform: lin
+    map_to: nu0_prime
+
+  # ---------- SBPL (used if spectrum=1) ----------
+  - name: nu_b0     
+    value: 8.0e17
+    min: 5.0e17
+    max: 2.0e18
+    fixed: true
+    transform: log
+    map_to: nu_b0
+
+  - name: q
+    value: 0.6
+    min: 0.45
+    max: 0.8
+    fixed: false
+    transform: lin
+    map_to: q
+
+  - name: alpha0
+    value: 0.3333
+    min: 0.2
+    max: 0.4
+    fixed: true
+    transform: lin
+    map_to: alpha0
+
+  - name: beta0
+    value: -2.5
+    min: -2.6
+    max: -2.0
+    fixed: true
+    transform: lin
+    map_to: beta0
+
+  - name: sbpl_s
+    value: 1.1
+    min: 0.2
+    max: 2.5
+    fixed: false
+    transform: lin
+    map_to: sbpl_s
+
+  # ---------- 2SBPL (used if spectrum=2) ----------
+  # kept for alternative spectrum=2 runs
+  - name: nu_b1_0
+    value: 3e15
+    min: 1.0e14
+    max: 7.0e16
+    fixed: true
+    transform: log
+    map_to: nu_b1_0
+
+  - name: nu_b2_0
+    value: 9.0e17
+    min: 8.0e17
+    max: 1.0e18
+    fixed: true
+    transform: log
+    map_to: nu_b2_0
+
+  - name: q1
+    value: 0.0
+    min: 0.0
+    max: 4.0
+    fixed: true
+    transform: lin
+    map_to: q1
+
+  - name: q2
+    value: 0.0
+    min: 0.0
+    max: 4.0
+    fixed: true
+    transform: lin
+    map_to: q2
+
+  - name: alpha_lo
+    value: -0.3333333333333
+    min: -0.4
+    max: -0.25
+    fixed: true
+    transform: lin
+    map_to: alpha_lo
+
+  - name: alpha_mid
+    value: 0.8
+    min: 0.0
+    max: 1.3
+    fixed: true
+    transform: lin
+    map_to: alpha_mid
+
+  - name: alpha_hi
+    value: 1.2
+    min: 0.9
+    max: 3.0
+    fixed: true
+    transform: lin
+    map_to: alpha_hi
+
+  - name: s1
+    value: 1.5
+    min: 1.0
+    max: 2.5
+    fixed: true
+    transform: lin
+    map_to: s1
+
+  - name: s2
+    value: 1.5
+    min: 1.0
+    max: 2.5
+    fixed: true
+    transform: lin
+    map_to: s2
+
+  # ---------- Comoving amplitude -----------
+  - name: i_p_prime
+    value: 1.0
+    min: 1.0e-3
+    max: 1.0e+3
+    fixed: false
+    transform: log
+    map_to: i_p_prime
+  
+  # ---------- Cosmology / redshift ----------
+  - name: z
+    value: 0.228
+    min: 0.0
+    max: 10.0
+    fixed: true
+    transform: lin
+    map_to: z
+
+  # ---------- Dense recompute resolution ----------
+  - name: n_theta
+    value: 1200
+    min: 50
+    max: 1200
+    fixed: true
+    map_to: n_theta
+
+  - name: n_phi
+    value: 1200
+    min: 50
+    max: 1200
+    fixed: true
+    map_to: n_phi
+
+  - name: n_bins
+    value: 250
+    min: 50
+    max: 250
+    fixed: true
+    map_to: n_bins
+
+  - name: n_nu
+    value: 128
+    min: 30
+    max: 250
+    fixed: true
+    map_to: n_nu
+
+  - name: n_mc
+    value: 5e4
+    min: 0
+    max: 5e5
+    fixed: true
+    map_to: n_mc
+
+  - name: min_grid_counts
+    value: 50
+    min: 10
+    max: 60
+    fixed: true
+    map_to: min_grid_counts
